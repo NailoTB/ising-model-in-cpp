@@ -5,14 +5,15 @@
 #include <sstream>
 
 using namespace std;
+#include "ioTools.h"
 
-void generateSpinLattice(int size, string datapath){
+void generateInitialLattice(int size, string datapath){ //implement ratio
   ofstream spinLattice(datapath + "spinLattice0.txt");
   random_device rd; mt19937 e2(rd()); normal_distribution<> dist(0, 3);
   
   for (int i = 0 ; i < size; i++){
     for (int j = 0; j < size; j++){
-      if(dist(e2) > -4){
+      if(dist(e2) > -1){
 	spinLattice << "1,";
       }else{
 	spinLattice << "-1,";
@@ -23,37 +24,61 @@ void generateSpinLattice(int size, string datapath){
   spinLattice.close();
 }
 
-vector<vector<int>> readDataToLattice(vector<vector<int>> latt, string datapath, int time){
-  ifstream dataLattice(datapath + "/spinLattice" + to_string(time) + ".txt");
-  int rowIdx = 0;
-  int val; string line;
-  
-  while(getline(dataLattice, line)){
-    stringstream ss(line);
-    int colIdx = 0;
-	while(ss >> val){
-      latt[rowIdx][colIdx] = val;
-	if(ss.peek() == ',') ss.ignore();
-      colIdx++;
+float totalSpin(vector<vector<int>> state){
+  int N = state.size();
+  int spinSum = 0;
+  for(int i = 0 ; i < N; i = i + 2){
+    for(int j = 0 ; j < N; j++){
+      spinSum = spinSum + state[i][j]*(state[(i+1)%N][j] + state[(N - 1 + i)%N][j] + state[i][(j+1)%N]);
     }
-    rowIdx++;
   }
-  dataLattice.close();
-  return latt;
+  return spinSum;
+}
+
+vector<int> getRandomCell(int size){
+  random_device rd; mt19937 e2(rd()); uniform_real_distribution<> dist(0, size-1);
+  vector<int> cell{ (int)round(dist(e2)), (int)round(dist(e2)) };
+  return cell;
+}
+
+float flipEnergyDifference(vector<vector<int>> currentState, vector<int> randomCell, float eps){
+  vector<vector<int>> newState = currentState;
+  newState[randomCell[0]][randomCell[1]] = -1*newState[randomCell[0]][randomCell[1]];
+  float newSpin = totalSpin(newState);
+  float oldSpin = totalSpin(currentState);
+  return eps*(newSpin - oldSpin);
+}
+
+bool checkFlipProbability(float spinDifference, float boltz, float temp){
+  random_device rd; mt19937 e2(rd()); uniform_real_distribution<> dist(0, 1);
+  float prob = exp(-spinDifference/(boltz*temp));
+  if(dist(e2) < prob){
+    return true;
+  } else{
+    return false;
+  }
 }
 
 int main() {
+  const float k = 1.0 ; const float T = 0.5; const float epsilon = -1.0; //boltzmann, temperature, interaction_energy
   string dataPath = "data/";
-  string dataName = "spinLattice";
-  int size = 20;
-  generateSpinLattice(size, dataPath);
-  
+  const int size = 100; const int timeSteps = 100; const int flipsPerStep = 1000;
   vector<vector<int>> lattice = vector<vector<int>>(size, vector<int>(size, 0));
+  generateInitialLattice(size, dataPath);
   lattice = readDataToLattice(lattice, dataPath, 0);
-  
-  for(int k = 0 ; k < size; k++){
-    cout << lattice[2][k] << endl;
+  for(int t = 1 ; t < timeSteps; t++){
+    for(int flip = 0 ; flip < flipsPerStep; flip++){
+      vector<int> cell = getRandomCell(size);
+      float spinDiff = flipEnergyDifference(lattice, cell, epsilon);
+      if(spinDiff < 0){
+	lattice[cell[0]][cell[1]] = -1*lattice[cell[0]][cell[1]]; 
+      } else{
+	if(checkFlipProbability(spinDiff, k, T)){
+	  lattice[cell[0]][cell[1]] = -1*lattice[cell[0]][cell[1]];
+	}
+      }
+    }
+    writeLatticeToFile(lattice, dataPath, t);
   }
-
   return 0;
 }
