@@ -13,7 +13,7 @@ void generateInitialLattice(int size, string datapath){ //implement ratio
   
   for (int i = 0 ; i < size; i++){
     for (int j = 0; j < size; j++){
-      if(dist(e2) > -1){
+      if(dist(e2) > 0){
 	spinLattice << "1,";
       }else{
 	spinLattice << "-1,";
@@ -41,11 +41,10 @@ vector<int> getRandomCell(int size){
   return cell;
 }
 
-float flipEnergyDifference(vector<vector<int>> currentState, vector<int> randomCell, float eps){
-  vector<vector<int>> newState = currentState;
-  newState[randomCell[0]][randomCell[1]] = -1*newState[randomCell[0]][randomCell[1]];
-  float newSpin = totalSpin(newState);
-  float oldSpin = totalSpin(currentState);
+float flipEnergyDifference(vector<vector<int>> state, vector<int> randomCell, float eps){
+  int N = state.size(); int i = randomCell[0]; int j = randomCell[1];
+  float oldSpin = state[i][j]*(state[(i+1)%N][j] + state[(N - 1 + i)%N][j] + state[i][(j+1)%N] + state[i][(N - 1 + j)%N]);
+  float newSpin = -oldSpin;
   return eps*(newSpin - oldSpin);
 }
 
@@ -60,7 +59,7 @@ bool checkFlipProbability(float spinDifference, float boltz, float temp){
 }
 
 int main() {
-  const float k = 1.0 ; const float T = 0.5; const float epsilon = -1.0; //boltzmann, temperature, interaction_energy
+  const float k = 1.0 ; const float T = 0.5; const float epsilon = -2.0; //boltzmann, temperature, interaction_energy
   string dataPath = "data/";
   const int size = 100; const int timeSteps = 100; const int flipsPerStep = 1000;
   vector<vector<int>> lattice = vector<vector<int>>(size, vector<int>(size, 0));
