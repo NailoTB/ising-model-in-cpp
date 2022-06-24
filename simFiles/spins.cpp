@@ -14,7 +14,7 @@ void generateInitialLattice(int size, string datapath){ //implement ratio
   
   for (int i = 0 ; i < size; i++){
     for (int j = 0; j < size; j++){
-      if(dist(e2) > -100){
+      if(dist(e2) > 0){
 	spinLattice << "1,";
       }else{
 	spinLattice << "-1,";
