@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <sstream>
+#include<ctime>
 
 using namespace std;
 #include "ioTools.h"
@@ -24,7 +25,7 @@ void generateInitialLattice(int size, string datapath){ //implement ratio
   spinLattice.close();
 }
 
-float totalSpin(vector<vector<int>> state){
+float totalPairSpin(vector<vector<int>> state){
   int N = state.size();
   int spinSum = 0;
   for(int i = 0 ; i < N; i = i + 2){
@@ -33,6 +34,27 @@ float totalSpin(vector<vector<int>> state){
     }
   }
   return spinSum;
+}
+float totalPairSpinDelta(vector<vector<int>> state){
+  int N = state.size();
+  int spinSum = 0;
+  for(int i = 0 ; i < N; i++){
+    for(int j = 0 ; j < N; j++){
+    spinSum = spinSum + state[i][j]*(state[(i+1)%N][j] + state[i][(j+1)%N]);  
+    }
+  }
+  return spinSum;
+}
+
+int totalMagnetization(vector<vector<int>> state){
+  int N = state.size();
+  int magSum = 0;
+  for(int i = 0 ; i < N; i++){
+    for(int j = 0 ; j < N; j++){
+    magSum = magSum + state[i][j];  
+    }
+  }
+  return abs(magSum);
 }
 
 vector<int> getRandomCell(int size){
