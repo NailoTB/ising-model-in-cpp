@@ -25,17 +25,7 @@ void generateInitialLattice(int size, string datapath){ //implement ratio
   spinLattice.close();
 }
 
-float totalPairSpin(vector<vector<int>> state){
-  int N = state.size();
-  int spinSum = 0;
-  for(int i = 0 ; i < N; i = i + 2){
-    for(int j = 0 ; j < N; j++){
-      spinSum = spinSum + state[i][j]*(state[(i+1)%N][j] + state[(N - 1 + i)%N][j] + state[i][(j+1)%N]);
-    }
-  }
-  return spinSum;
-}
-float totalPairSpinDelta(vector<vector<int>> state){
+float totalPairEnergy(vector<vector<int>> state){
   int N = state.size();
   int spinSum = 0;
   for(int i = 0 ; i < N; i++){
@@ -63,9 +53,9 @@ vector<int> getRandomCell(int size){
   return cell;
 }
 
-float flipEnergyDifference(vector<vector<int>> state, vector<int> randomCell, float eps){
+float flipEnergyDifference(vector<vector<int>> state, vector<int> randomCell, float eps, float extForce){
   int N = state.size(); int i = randomCell[0]; int j = randomCell[1];
-  float oldSpin = state[i][j]*(state[(i+1)%N][j] + state[(N - 1 + i)%N][j] + state[i][(j+1)%N] + state[i][(N - 1 + j)%N]);
+  float oldSpin = state[i][j]*(state[(i+1)%N][j] + state[(N - 1 + i)%N][j] + state[i][(j+1)%N] + state[i][(N - 1 + j)%N]) - extForce*state[i][j];
   return 2.0*eps*oldSpin; //newSpin = -oldSpin
 }
 
@@ -80,16 +70,20 @@ bool checkFlipProbability(float spinDifference, float boltz, float temp){
 }
 
 int main() {
-  const float k = 1.0 ; const float T = 0.5; const float epsilon = 1.0; //boltzmann, temperature, interaction_energy
+  const float k = 1.0 ; const float T = 0.5; const float epsilon = 1.0; const float magField = -0.1; //boltzmann, temperature, interaction_energy
   string dataPath = "data/";
-  const int size = 400; const int timeSteps = 100; const int flipsPerStep = 20000;
+  const int size = 400; const int timeSteps = 100; const int flipsPerStep = 25000;
   vector<vector<int>> lattice = vector<vector<int>>(size, vector<int>(size, 0));
   generateInitialLattice(size, dataPath);
   lattice = readDataToLattice(lattice, dataPath, 0);
+
+  cout << "Starting the simulation...\n";
+  cout << "Timestep: " << endl;
+  cout << "1/" << timeSteps << flush;
   for(int t = 1 ; t < timeSteps; t++){
     for(int flip = 0 ; flip < flipsPerStep; flip++){
       vector<int> cell = getRandomCell(size);
-      float spinDiff = flipEnergyDifference(lattice, cell, epsilon);
+      float spinDiff = flipEnergyDifference(lattice, cell, epsilon, magField);
       if(spinDiff < 0){
 	lattice[cell[0]][cell[1]] = -1*lattice[cell[0]][cell[1]]; 
       } else{
@@ -97,8 +91,13 @@ int main() {
 	  lattice[cell[0]][cell[1]] = -1*lattice[cell[0]][cell[1]];
 	}
       }
+      
     }
     writeLatticeToFile(lattice, dataPath, t);
+    cout << "\r" << t+1 << "/" << timeSteps << flush;
   }
+
+  cout << "\nSimulation done." << endl;
+  
   return 0;
 }

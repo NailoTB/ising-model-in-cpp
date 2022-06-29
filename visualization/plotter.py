@@ -5,7 +5,7 @@ import os
 
 datapath = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "/simFiles/data/"
 files = os.listdir(datapath)
-
+print("Starting figure creation. This might take a while...")
 for file in files:
     data = np.genfromtxt(datapath + file, delimiter=',')
     plt.rcParams['text.usetex'] = True
@@ -15,3 +15,5 @@ for file in files:
     plt.axis('off')
     plt.savefig("figures/" + file[0:-4] + '.png', dpi = 200, bbox_inches='tight')
     plt.close() #todo allow other settings
+
+print("Figures done.")
