@@ -9,10 +9,10 @@ The script compiles the simulator, runs it and creates an animation. The initial
 
 To do: Make dynamic temperature. More refactoring. Explain physics.
 
-<p align="left">
+<p align="center">
   <img height="400" src="https://github.com/NailoTB/spins-on-lattice/blob/main/animation.gif">
 </p>
 
-<p align="right">
+<p align="center">
   <img height="400" src="https://github.com/NailoTB/spins-on-lattice/blob/main/totalMagnetization.png">
 </p>
