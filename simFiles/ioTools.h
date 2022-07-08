@@ -32,3 +32,16 @@ void writeLatticeToFile(vector<vector<int>> lattice, string datapath, int time){
   }
   spinLattice.close();
 }
+
+void writeDerivedData(vector<float> dataVector, string name){
+  ofstream derivedData("derived/" + name + ".txt");
+  const int size = dataVector.size();
+  for(int i = 0 ; i < size; i++){
+      if(i == 0){
+        derivedData << to_string(dataVector[i]);
+      } else{
+        derivedData << "," + to_string(dataVector[i]);
+      }
+  }
+  derivedData.close();
+};
