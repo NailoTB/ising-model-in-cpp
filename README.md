@@ -9,7 +9,8 @@ The simulations can be run simply by calling either bash scripts:
 The first simulation depicts the magnetization process from a dispersed state at T = 1. The second simulation depicts the phase transition from a magnetized state to a dispersed state.
 
 The scripts compile the simulator, runs it and creates an animation. The initial state is seeded. The spin-flip algorithm is the Metropolis-Hastings algorithm.
-To do: More refactoring. Explain physics.
+
+To do: More refactoring. Explain physics. Make plotter smarter.
 
 <p align="center">
   <img height="400" src="https://github.com/NailoTB/spins-on-lattice/blob/main/metastable_animation.gif">
