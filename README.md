@@ -6,7 +6,7 @@ The simulations can be run simply by calling either bash scripts:
 ./runOne.sh
 ./runPhase.sh
 ```
-The first simulation depicts the magnetization process from a half-magnetized state at T = 1. The second simulation depicts the phase transition from a magnetized state to a dispersed state.
+The first simulation depicts the magnetization process from a dispersed state at T = 1. The second simulation depicts the phase transition from a magnetized state to a dispersed state.
 
 The scripts compile the simulator, runs it and creates an animation. The initial state is seeded. The spin-flip algorithm is the Metropolis-Hastings algorithm.
 To do: More refactoring. Explain physics.
@@ -20,5 +20,5 @@ To do: More refactoring. Explain physics.
   <img height="400" src="https://github.com/NailoTB/spins-on-lattice/blob/main/totalPhaseMagnetization.png">
 </p>
 
-The left animation depicts a meta-stable state. The right animation shows how the phase transition occurs (it takes a couple of seconds).
+The left animation depicts a meta-stable state. The right animation shows how the phase transition occurs from a completely magnetized state (it takes a couple of seconds).
 The bottom graph shows the total magnetization as a function of temperature. The red line shows the analytical solution for the critical temperature (T = 2.27).

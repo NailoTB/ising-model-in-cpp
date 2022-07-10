@@ -24,18 +24,17 @@ def plotDerived():
             data = np.genfromtxt(datapath + file, delimiter=',')
             plt.rcParams['text.usetex'] = True
             fig, ax = plt.subplots(figsize=(6,4), tight_layout=True)
-            ax.plot(tempSpace, data)
+            ax.plot(data)
             ax.set_xlabel("T")
             ax.set_ylabel("Magnetization")
             ax.set_ylim((-0.01, 1.01))
-            plt.axvline(x = 2.27, color = 'r', ls='--')
+            #plt.axvline(x = 2.27, color = 'r', ls='--')  #analytical phase transition temp
             ax.grid()
             plt.savefig(file[0:-4] + '.png', dpi = 200, bbox_inches='tight')
             plt.close()
 
 
 print("Starting figure creation. This might take a while...")
-tempSpace = np.linspace(0.015, 200*0.015, 200)
 plotDerived()
 plotRawData()
 
