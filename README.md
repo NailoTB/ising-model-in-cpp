@@ -11,11 +11,8 @@ The first simulation depicts the magnetization process from a half-magnetized st
 The scripts compile the simulator, runs it and creates an animation. The initial state is seeded. The spin-flip algorithm is the Metropolis-Hastings algorithm.
 To do: More refactoring. Explain physics.
 
-<p align="left">
+<p align="center">
   <img height="400" src="https://github.com/NailoTB/spins-on-lattice/blob/main/metastable_animation.gif">
-</p>
-
-<p align="right">
   <img height="400" src="https://github.com/NailoTB/spins-on-lattice/blob/main/phase_animation.gif">
 </p>
 
